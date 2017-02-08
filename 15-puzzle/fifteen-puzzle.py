@@ -47,6 +47,14 @@ class Board:
         solution = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,None]
         return solution == self.pos
 
+    def manhattan_distance(self):
+        distance = 0
+        for i in range(self.size - 1):
+            distance += abs(i // self.width - self.pos.index(i+1) // self.width)
+            distance += abs(i % self.width - self.pos.index(i+1) % self.width)
+            print(distance)
+        return distance
+
 
 
 if __name__ == '__main__':
