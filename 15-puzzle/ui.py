@@ -31,17 +31,17 @@ class Board:
             self.pos[blank] = self.pos[blank+1]
             self.pos[blank+1] = None
         if (directon == 'u') and (blank < (self.size-self.width)):
-            self.pos[blank] = self.pos[blank+4]
-            self.pos[blank+4] = None
+            self.pos[blank] = self.pos[blank+self.width]
+            self.pos[blank+self.width] = None
         if (directon == 'd') and (blank >= self.width):
-            self.pos[blank] = self.pos[blank-4]
-            self.pos[blank-4] = None
+            self.pos[blank] = self.pos[blank-self.width]
+            self.pos[blank-self.width] = None
 
     def getPos(self, x, y):
         """
             x, y: range from 0 to 3
         """
-        return self.pos[4*y + x]
+        return self.pos[self.width*y + x]
 
     def check(self):
         solution = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,None]
