@@ -81,7 +81,6 @@ class Board:
         state = []
         stateDist = []
         path = [self.board]
-        pathDist = self.manhattan_distance(self.board)
         traversed = []
         while self.check(path[-1]) != True:
             if len(traversed) % 200 == 0:
@@ -90,12 +89,11 @@ class Board:
                 for node in self.expand(path[-1]):
                     if node not in traversed:
                         state.append(path + [node])
-                        stateDist.append(pathDist + self.manhattan_distance(node) - self.manhattan_distance(path[-1]))
+                        stateDist.append(self.manhattan_distance(node))
                         if path[-1] not in traversed:
                             traversed.append(path[-1])
             nextIndex = stateDist.index(min(stateDist))
             path = state[nextIndex]
-            pathDist = stateDist[nextIndex]
             state = state[:nextIndex] + state[nextIndex+1:]
             stateDist = stateDist[:nextIndex] + stateDist[nextIndex+1:]
         self.AstarPath = path
