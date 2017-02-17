@@ -6,10 +6,8 @@ class Board:
         assert len(list(initBoard)) == 16 # check 15 puzzle
         self.size = 16
         self.width = 4
-        self.path = []
-        self.path.append(initBoard)
-        self.distance = []
-        self.distance.append(self.manhattan_distance())
+        self.board = initBoard
+        self.AstarPath = None
 
     def show(self, board):
         print('-----------------')
@@ -23,11 +21,11 @@ class Board:
             if i % self.width == (self.width - 1):
                 print()
                 print('-----------------')
-        print('\n\n')
+        print()
 
-    def move(self, directon):
-        blank = self.path[-1].index(None)
-        moveRes = self.path[-1][:]
+    def move(self, board, directon):
+        blank = board.index(None)
+        moveRes = board[:]
         if (directon == 'r') and (blank % self.width != 0):
             moveRes[blank] = moveRes[blank-1]
             moveRes[blank-1] = None
@@ -42,8 +40,8 @@ class Board:
             moveRes[blank-self.width] = None
         return moveRes
 
-    def expand(self):
-        blank = self.path[-1].index(None)
+    def expand(self, board):
+        blank = board.index(None)
         expandDirections = []
         if blank // self.width != 0:
             expandDirections.append('d')
@@ -55,33 +53,62 @@ class Board:
             expandDirections.append('l')
         newPath = []
         for direction in expandDirections:
-            newPath.append(self.move(direction))
+            newPath.append(self.move(board, direction))
         return newPath
 
-    def getPos(self, x, y):
+    def getPos(self, board, x, y):
         """
             x, y: range from 0 to 3
         """
-        return self.path[-1][self.width*y + x]
+        return board[self.width*y + x]
 
-    def check(self):
-        solution = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,None]
-        return solution == self.path[-1]
+    def check(self, board):
+        return self.manhattan_distance(board) == 0
 
-    def manhattan_distance(self):
+    def manhattan_distance(self, board):
         distance = 0
         for i in range(self.size - 1):
-            distance += abs(i // self.width - self.path[-1].index(i+1) // self.width)
-            distance += abs(i % self.width - self.path[-1].index(i+1) % self.width)
+            distance += abs(i // self.width - board.index(i+1) // self.width)
+            distance += abs(i % self.width - board.index(i+1) % self.width)
         return distance
+
+    def Astar(self):
+        """
+            A* algorithm
+        """
+        state = []
+        stateDist = []
+        path = [self.board]
+        pathDist = self.manhattan_distance(self.board)
+        traversed = []
+        while self.check(path[-1]) != True:
+            if path[-1] not in traversed:
+                for node in self.expand(path[-1]):
+                    if node not in traversed:
+                        state.append(path + [node])
+                        stateDist.append(pathDist + self.manhattan_distance(node) - self.manhattan_distance(path[-1]))
+                        if path[-1] not in traversed:
+                            traversed.append(path[-1])
+            nextIndex = stateDist.index(min(stateDist))
+            path = state[nextIndex]
+            pathDist = stateDist[nextIndex]
+            state = state[:nextIndex] + state[nextIndex+1:]
+            stateDist = stateDist[:nextIndex] + stateDist[nextIndex+1:]
+        self.AstarPath = path
+
+    def showAstarSol(self):
+        if self.AstarPath == None:
+            self.Astar()
+        print('A* algorithm solution:')
+        for step in range(len(self.AstarPath)):
+            print('Step ' + str(step+1) + ':')
+            self.show(self.AstarPath[step])
+
 
 
 
 if __name__ == '__main__':
-    b = Board([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,None])
-    while True:
-        b.show(b.path[-1])
-        i = input()
-        b.move(i)
+    b = Board([15,2,3,4,5,6,7,8,9,10,11,12,13,1,14,None])
+    b.showAstarSol()
 
 
