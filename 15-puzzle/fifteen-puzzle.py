@@ -1,4 +1,6 @@
 
+import logging
+logging.basicConfig(format='%(asctime)s : %(message)s', level=logging.INFO)
 
 class Board:
 
@@ -82,6 +84,8 @@ class Board:
         pathDist = self.manhattan_distance(self.board)
         traversed = []
         while self.check(path[-1]) != True:
+            if len(traversed) % 200 == 0:
+                logging.info('It has traversed ' + str(len(traversed)) + ' nodes')
             if path[-1] not in traversed:
                 for node in self.expand(path[-1]):
                     if node not in traversed:
