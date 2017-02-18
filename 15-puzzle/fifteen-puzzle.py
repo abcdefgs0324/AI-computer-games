@@ -10,6 +10,7 @@ class Board:
         self.width = 4
         self.board = initBoard
         self.AstarPath = None
+        self.bfsPath = None
 
     def show(self, board):
         print('-----------------')
@@ -84,7 +85,7 @@ class Board:
         traversed = []
         while self.check(path[-1]) != True:
             if len(traversed) % 200 == 0:
-                logging.info('It has traversed ' + str(len(traversed)) + ' nodes')
+                logging.info('A* has traversed ' + str(len(traversed)) + ' nodes')
             if path[-1] not in traversed:
                 for node in self.expand(path[-1]):
                     if node not in traversed:
@@ -98,6 +99,25 @@ class Board:
             stateDist = stateDist[:nextIndex] + stateDist[nextIndex+1:]
         self.AstarPath = path
 
+    def breadth_first(self):
+        """
+            Breadth First Search algorithm
+        """
+        state = []
+        path = [self.board]
+        traversed = []
+        while self.check(path[-1]) != True:
+            if len(traversed) % 200 == 0:
+                logging.info('BFS has traversed ' + str(len(traversed)) + ' nodes')
+            if path[-1] not in traversed:
+                for node in self.expand(path[-1]):
+                    if node not in traversed:
+                        state.append(path + [node])
+                traversed.append(path[-1])
+            path = state[0]
+            state = state[1:]
+        self.bfsPath = path
+
     def showAstarSol(self):
         if self.AstarPath == None:
             self.Astar()
@@ -106,11 +126,19 @@ class Board:
             print('Step ' + str(step+1) + ':')
             self.show(self.AstarPath[step])
 
+    def showBfsSol(self):
+        if self.bfsPath == None:
+            self.breadth_first()
+        print('BFS algorithm solution:')
+        for step in range(len(self.bfsPath)):
+            print('Step ' + str(step+1) + ':')
+            self.show(self.bfsPath[step])
+
 
 
 
 if __name__ == '__main__':
     b = Board([15,2,3,4,5,6,7,8,9,10,11,12,13,1,14,None])
-    b.showAstarSol()
+    b.showAstarSol() # b.showBfsSol()
 
 
