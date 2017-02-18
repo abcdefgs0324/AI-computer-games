@@ -123,7 +123,7 @@ class Board:
             self.Astar()
         print('A* algorithm solution:')
         for step in range(len(self.AstarPath)):
-            print('Step ' + str(step+1) + ':')
+            print('Step ' + str(step) + ':')
             self.show(self.AstarPath[step])
 
     def showBfsSol(self):
@@ -131,7 +131,7 @@ class Board:
             self.breadth_first()
         print('BFS algorithm solution:')
         for step in range(len(self.bfsPath)):
-            print('Step ' + str(step+1) + ':')
+            print('Step ' + str(step) + ':')
             self.show(self.bfsPath[step])
 
 
